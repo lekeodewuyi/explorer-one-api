@@ -23,6 +23,7 @@
   "homepage": "https://github.com/lekeodewuyi/explorer-one-api#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "firebase": "^7.19.1",
     "twitter": "^1.7.1"
   }
 }

@@ -18,7 +18,7 @@ const { db, T } = require('../utilities/admin');
 // })
 
 
-exports.SearchForTweet = (req, res) => {
+exports.searchForTweet = (req, res) => {
     const params = {
         q: req.body.query,
         count: req.body.count,
