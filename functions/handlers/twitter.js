@@ -1,4 +1,4 @@
-const { db, T } = require('../utilities/admin');
+const { db, admin, T } = require('../utilities/admin');
 
 
 // var params = {
@@ -49,4 +49,19 @@ exports.getTweetById = (req, res) => {
                 return res.status(400).json({err})
             }
             })
+}
+
+
+exports.saveFavoriteTweet = async (req, res) => {
+
+    const tweetId = req.params.tweetId;
+
+   const user = db.collection("users").doc(`${email}`);
+
+    // Atomically add a new region to the "regions" array field.
+    const addFavorites = await user.update({
+        favorites: admin.firestore.FieldValue.arrayUnion(tweetId)
+    });
+
+    return res.json({userDetails});
 }
