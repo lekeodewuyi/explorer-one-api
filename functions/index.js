@@ -5,7 +5,7 @@ const app = express();
 
 const { sea, searchForTweet } = require('./handlers/twitter');
 
-app.post('/gettweet', searchForTweet)
+app.post('/search', searchForTweet)
 
 
 exports.api = functions.https.onRequest(app);
