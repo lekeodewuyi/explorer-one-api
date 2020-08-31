@@ -21,15 +21,8 @@ exports.auth = (req, res, next) => {
                 .get();
         })
         .then(data => {
-            userDetails = data.docs[0].data();
-            // req.user.handle = data.docs[0].data().handle;
-            // req.user.isDiabetic = data.docs[0].data().isDiabetic;
-            // req.user.isNutAllergic = data.docs[0].data().isNutAllergic;
-            // req.user.isPeanutAllergic = data.docs[0].data().isPeanutAllergic;
-            // req.user.imageUrl = data.docs[0].data().imageUrl;
-            // req.user.condition = data.docs[0].data().condition;
-            // console.log(req.user.condition);
-            // console.log("user details successfully extracted from auth token")
+            userName = data.docs[0].data().name;
+            // userDetails = data.docs[0].data();
             return next();
         })
         .catch(err => {

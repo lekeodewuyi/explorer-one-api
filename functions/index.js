@@ -3,13 +3,14 @@ const functions = require('firebase-functions');
 const express = require('express');
 const app = express();
 
-const { searchForTweet, getTweetById, saveFavoriteTweet } = require('./handlers/twitter');
+const { searchForTweet, getTweetById, saveFavoriteTweet, deleteFavoriteTweet } = require('./handlers/twitter');
 const { signup, login } = require('./handlers/users');
 const { auth } = require('./utilities/auth');
 
 app.post('/search', searchForTweet);
 app.post('/search/id', getTweetById);
 app.post('/addfavorite/:tweetId', auth ,saveFavoriteTweet);
+app.post('/deletefavorite/:tweetId', auth ,deleteFavoriteTweet);
 
 app.post('/signup', signup);
 app.post('/login', login);

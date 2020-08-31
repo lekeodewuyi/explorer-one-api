@@ -56,12 +56,49 @@ exports.saveFavoriteTweet = async (req, res) => {
 
     const tweetId = req.params.tweetId;
 
-   const user = db.collection("users").doc(`${email}`);
+    const user = db.collection("users").doc(`${email}`);
 
-    // Atomically add a new region to the "regions" array field.
-    const addFavorites = await user.update({
+    await user.update({
         favorites: admin.firestore.FieldValue.arrayUnion(tweetId)
     });
 
-    return res.json({userDetails});
+    let userDetails = {};
+    return db.doc(`users/${email}`).get()
+        .then((doc) => {
+            if(!doc.exists) {
+                return res.status(400).json({error: "Sorry, this user does not exist"})
+            }
+            userDetails = doc.data();
+            return res.json({userDetails});
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.status(500).json({error: "Something went wrong"})
+        })
+}
+
+
+exports.deleteFavoriteTweet = async (req, res) => {
+
+    const tweetId = req.params.tweetId;
+
+    const user = db.collection("users").doc(`${email}`);
+
+    await user.update({
+        favorites: admin.firestore.FieldValue.arrayRemove(tweetId)
+    });
+
+    let userDetails = {};
+    return db.doc(`users/${email}`).get()
+        .then((doc) => {
+            if(!doc.exists) {
+                return res.status(400).json({error: "Sorry, this user does not exist"})
+            }
+            userDetails = doc.data();
+            return res.json({userDetails});
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.status(500).json({error: "Something went wrong"})
+        })
 }
