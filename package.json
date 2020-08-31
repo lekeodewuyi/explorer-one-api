@@ -1,0 +1,28 @@
+{
+  "name": "explorer-one-api",
+  "version": "1.0.0",
+  "description": "A cool twitter app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lekeodewuyi/explorer-one-api.git"
+  },
+  "keywords": [
+    "Twitter",
+    "bot",
+    "app"
+  ],
+  "author": "Leke Odewuyi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lekeodewuyi/explorer-one-api/issues"
+  },
+  "homepage": "https://github.com/lekeodewuyi/explorer-one-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "twitter": "^1.7.1"
+  }
+}
