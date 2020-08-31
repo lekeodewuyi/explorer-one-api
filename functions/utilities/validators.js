@@ -39,7 +39,7 @@ exports.validateLoginData = (data) => {
         errors.email = 'Please enter a valid email address'
     }
 
-    if (isEmpty(data.password)) errors.password = 'Password must not be empty';
+    if (isEmpty(data.password)) errors.password = 'Please enter a password';
 
     return {
         errors,
