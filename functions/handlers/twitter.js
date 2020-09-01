@@ -64,50 +64,102 @@ exports.getTweetById = (req, res) => {
 
 exports.saveFavoriteTweet = async (req, res) => {
 
+    const collectionName = req.body.collectionName
     const tweetId = req.params.tweetId;
-    const user = db.collection("users").doc(`${email}`);
 
-    await user.update({
-        favorites: admin.firestore.FieldValue.arrayUnion(tweetId)
-    });
+    const user = db.collection("users").doc(`${email}`);
+    const collection = db.collection(`${email}-(Collections)`).doc(`${collectionName}`);
+
+    try {  
+        await user.update({
+            favorites: admin.firestore.FieldValue.arrayUnion(tweetId)
+        });
+    } catch (error) {
+        return res.status(500).json({error: "Something went wrong, please try again"})
+    }
+
+    try {  
+        await collection.update({
+            [collectionName]: admin.firestore.FieldValue.arrayUnion(tweetId)
+        })
+    } catch (error) {
+        return res.status(500).json({error: "Something went wrong, please try again"})
+    }
+   
 
     let userDetails = {};
+    let collectionDetails = {};
     return db.doc(`users/${email}`).get()
         .then((doc) => {
             if(!doc.exists) {
                 return res.status(400).json({error: "Sorry, this user does not exist"})
             }
             userDetails = doc.data();
-            return res.json({userDetails});
+            return db.doc(`${email}-(Collections)/${collectionName}`).get();
+        })
+        .then((doc) => {
+            if(!doc.exists) {
+                return res.status(400).json({error: "Sorry, this collection does not exist"})
+            }
+            collectionDetails = doc.data();
+            return res.json({userDetails, collectionDetails});
         })
         .catch((error) => {
             console.error(error);
             return res.status(500).json({error: "Something went wrong"})
         })
+
+
 }
 
 
 exports.deleteFavoriteTweet = async (req, res) => {
 
+    const collectionName = req.body.collectionName
     const tweetId = req.params.tweetId;
-    const user = db.collection("users").doc(`${email}`);
 
-    await user.update({
-        favorites: admin.firestore.FieldValue.arrayRemove(tweetId)
-    });
+    const user = db.collection("users").doc(`${email}`);
+    const collection = db.collection(`${email}-(Collections)`).doc(`${collectionName}`);
+
+    try {  
+        await user.update({
+            favorites: admin.firestore.FieldValue.arrayRemove(tweetId)
+        });
+    } catch (error) {
+        return res.status(500).json({error: "Something went wrong, please try again"})
+    }
+
+    try {  
+        await collection.update({
+            [collectionName]: admin.firestore.FieldValue.arrayRemove(tweetId)
+        })
+    } catch (error) {
+        return res.status(500).json({error: "Something went wrong, please try again"})
+    }
+   
+
     let userDetails = {};
+    let collectionDetails = {};
     return db.doc(`users/${email}`).get()
         .then((doc) => {
             if(!doc.exists) {
                 return res.status(400).json({error: "Sorry, this user does not exist"})
             }
             userDetails = doc.data();
-            return res.json({userDetails});
+            return db.doc(`${email}-(Collections)/${collectionName}`).get();
+        })
+        .then((doc) => {
+            if(!doc.exists) {
+                return res.status(400).json({error: "Sorry, this collection does not exist"})
+            }
+            collectionDetails = doc.data();
+            return res.json({userDetails, collectionDetails});
         })
         .catch((error) => {
             console.error(error);
             return res.status(500).json({error: "Something went wrong"})
         })
+
 }
 
 
