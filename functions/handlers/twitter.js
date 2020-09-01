@@ -1,6 +1,7 @@
 const { db, admin, T } = require('../utilities/admin');
 
 const _ = require('lodash');
+const { user } = require('firebase-functions/lib/providers/auth');
 
 const reducerArray = [
     'id_str',
@@ -164,4 +165,52 @@ exports.timeTravel = (req, res) => {
             return res.status(400).json({err})
         }
     })
+}
+
+
+
+
+exports.createCollection = async (req, res) => {
+
+    const collectionName = req.body.collectionName;
+
+    const newCollection = {
+        email: email,
+        [collectionName]: [],
+        collectionName: req.body.collectionName,
+        createdAt: new Date().toISOString()
+    }
+
+    let collectionCount;
+    let collectionDetails = {};
+    db.doc(`users/${email}`).get()
+        .then((doc) => {
+            collectionCount = doc.data().collectionCount;
+            if (collectionCount < 20) {
+                return db.collection(`${email}-(Collections)`).where("collectionName", "==", collectionName).get();
+            } else {
+                return res.status(400).json({error: "You have exceeded your collection limit"})
+            }
+        })
+        .then( async (data) => {
+            let collections = [];
+            data.forEach((doc) => {
+                collections.push(doc.data());
+            })
+            if (!Array.isArray(collections) || !collections.length) { // collection does not exist
+                await db.doc(`users/${email}`).update({collectionCount: collectionCount + 1})
+                return db.doc(`${email}-(Collections)/${newCollection.collectionName}`).set(newCollection);
+            } else {
+                return res.status(400).json({error: "You already have a collection with this name"})
+            }
+        })
+        .then(() => {
+            collectionDetails = newCollection;
+            return res.json({collectionDetails})
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.status(500).json({error: "Something went wrong"})
+        })
+
 }

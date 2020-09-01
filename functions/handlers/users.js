@@ -102,3 +102,13 @@ exports.login = (req, res) => {
         }
     })
 }
+
+
+exports.getUserDetail = (req, res) => {
+    db.doc('users/user@email.com').get()
+        .then((doc) => {
+            let hello = doc.data();
+            let fieldLength = Object.keys(hello).length
+            return res.json({fieldLength, hello})
+        })
+}
