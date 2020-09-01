@@ -8,7 +8,7 @@ const { signup, login } = require('./handlers/users');
 const { auth } = require('./utilities/auth');
 
 app.post('/search', searchForTweet);
-app.post('/search/:tweetId', getTweetById);
+app.post('/get/:tweetId', getTweetById);
 app.post('/addfavorite/:tweetId', auth ,saveFavoriteTweet);
 app.post('/deletefavorite/:tweetId', auth, deleteFavoriteTweet);
 app.post('/getfavorites', auth, getFavoriteTweets);
