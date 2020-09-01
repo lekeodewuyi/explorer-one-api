@@ -163,7 +163,7 @@ exports.deleteFavoriteTweet = async (req, res) => {
 }
 
 
-exports.getFavoriteTweets = (req, res) => {
+exports.getAllFavoriteTweets = (req, res) => {
 
     let favorites = [];
     let results = [];
@@ -265,4 +265,46 @@ exports.createCollection = async (req, res) => {
             return res.status(500).json({error: "Something went wrong"})
         })
 
+}
+
+
+exports.getTweetsFromCollection = (req, res) => {
+
+    const collectionName = req.body.collectionName;
+
+    let results = [];
+    let collectionDetails;
+    let collectionFavorites = []
+    db.doc(`${email}-(Collections)/${collectionName}`).get()
+        .then( async (doc) => {
+            if(!doc.exists) {
+                return res.status(400).json({error: "Sorry, this collection does not exist"})
+            }
+            collectionDetails = doc.data();
+            collectionFavorites = doc.data()[`${req.body.collectionName}`];
+            console.log(collectionFavorites)
+            let length = collectionFavorites.length;
+            let collectionFavoritesIds = collectionFavorites.toString();
+
+            const params = {
+                id: collectionFavoritesIds
+            }
+
+            return T.get(`statuses/lookup`, params, function (err, data, response) {
+                if(!err){
+                        for (let i = 0; i < data.length; i++) {
+                            data[i] = _.pick(data[i], reducerArray)
+                        }
+                        results = data;
+                        return res.json({length, collectionDetails, results})
+                } else {
+                    return res.status(400).json({err})
+                }
+            })
+
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.status(500).json({error: "Something went wrong"})
+        })
 }
