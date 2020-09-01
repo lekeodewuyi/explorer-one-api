@@ -5,6 +5,7 @@ const _ = require('lodash');
 const reducerArray = [
     'id_str',
     'created_at',
+    'full_text',
     'text',
     'user["screen_name"]',
     'user["name"]',
@@ -15,12 +16,15 @@ const reducerArray = [
     'retweet_count',
     'favorite_count',
     'lang',
+    'retweeted_status["text"]',
+    'retweeted_status["full_text"]',
     'is_quote_status',
     'extended_entities["media"]'
 ]
 
 exports.searchForTweet = (req, res) => {
     const params = {
+        tweet_mode: "extended",
         q: req.body.query,
         count: req.body.count,
         result_type: req.body.result_type,
@@ -28,7 +32,6 @@ exports.searchForTweet = (req, res) => {
         geo: "england"
     }
     let results = []
-
     T.get('search/tweets/', params, function(err, data, response) {
         if(!err){
             results = data.statuses;
@@ -141,4 +144,24 @@ exports.getFavoriteTweets = (req, res) => {
             console.error(error);
             return res.status(500).json({error: "Something went wrong"})
         })
+}
+
+
+
+exports.timeTravel = (req, res) => {
+    const params = {
+        screen_name: req.body.screen_name
+    }
+
+    return T.get(`statuses/user_timeline`, params, function (err, data, response) {
+        if(!err){
+                for (let i = 0; i < data.length; i++) {
+                    data[i] = _.pick(data[i], reducerArray)
+                }
+                results = data;
+                return res.json({results})
+        } else {
+            return res.status(400).json({err})
+        }
+    })
 }
