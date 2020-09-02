@@ -19,7 +19,7 @@ app.post('/deletefavorite/:tweetId', auth, deleteFavoriteTweet);
 app.post('/getfavorites', auth, getAllFavoriteTweets);
 app.post('/collection', auth, getTweetsFromCollection);
 app.post('/timetravel', timeTravel);
-app.post('/create', auth, createCollection);
+app.post('/collection/create', auth, createCollection);
 app.post('/geo', getPlaceId)
 
 app.post('/signup', signup);
