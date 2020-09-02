@@ -246,6 +246,7 @@ exports.createCollection = async (req, res) => {
         .then((doc) => {
             collectionCount = doc.data().collectionCount;
             if (collectionCount < 20) {
+                
                 return db.collection(`${email}-(Collections)`).where("collectionName", "==", collectionName).get();
             } else {
                 return res.status(400).json({error: "You have exceeded your collection limit"})
@@ -257,7 +258,10 @@ exports.createCollection = async (req, res) => {
                 collections.push(doc.data());
             })
             if (!Array.isArray(collections) || !collections.length) { // collection does not exist
-                await db.doc(`users/${email}`).update({collectionCount: collectionCount + 1})
+                await db.doc(`users/${email}`).update({collectionCount: collectionCount + 1});
+                await db.collection("users").doc(`${email}`).update({
+                    collections: admin.firestore.FieldValue.arrayUnion(collectionName)
+                });
                 return db.doc(`${email}-(Collections)/${newCollection.collectionName}`).set(newCollection);
             } else {
                 return res.status(400).json({error: "You already have a collection with this name"})
