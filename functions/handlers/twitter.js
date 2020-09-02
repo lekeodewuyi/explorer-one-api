@@ -29,8 +29,7 @@ exports.searchForTweet = (req, res) => {
         q: req.body.query,
         count: req.body.count,
         result_type: req.body.result_type,
-        lang: req.body.language,
-        geo: "england"
+        lang: req.body.language
     }
     let results = []
     T.get('search/tweets/', params, function(err, data, response) {
@@ -307,4 +306,25 @@ exports.getTweetsFromCollection = (req, res) => {
             console.error(error);
             return res.status(500).json({error: "Something went wrong"})
         })
+}
+
+
+
+exports.getPlaceId = (req, res) => {
+    const params = {
+        query: req.body.country,
+        granularity: "country"
+    }
+
+    return T.get(`geo/search`, params, function (err, data, response) {
+        if(!err){
+                // for (let i = 0; i < data.length; i++) {
+                //     data[i] = _.pick(data[i], reducerArray)
+                // }
+                results = data;
+                return res.json({results})
+        } else {
+            return res.status(400).json({err})
+        }
+    })
 }

@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/lekeodewuyi/explorer-one-api#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase": "^7.19.1",
     "lodash": "^4.17.20",

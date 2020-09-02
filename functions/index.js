@@ -3,7 +3,10 @@ const functions = require('firebase-functions');
 const express = require('express');
 const app = express();
 
-const { searchForTweet, getTweetById, saveFavoriteTweet, deleteFavoriteTweet, getAllFavoriteTweets, timeTravel, createCollection, getTweetsFromCollection } = require('./handlers/twitter');
+const cors = require('cors')
+app.use(cors());
+
+const { searchForTweet, getTweetById, saveFavoriteTweet, deleteFavoriteTweet, getAllFavoriteTweets, timeTravel, createCollection, getTweetsFromCollection, getPlaceId } = require('./handlers/twitter');
 
 const { signup, login } = require('./handlers/users');
 const { auth } = require('./utilities/auth');
@@ -17,6 +20,7 @@ app.post('/getfavorites', auth, getAllFavoriteTweets);
 app.post('/collection', auth, getTweetsFromCollection);
 app.post('/timetravel', timeTravel);
 app.post('/create', auth, createCollection);
+app.post('/geo', getPlaceId)
 
 app.post('/signup', signup);
 app.post('/login', login);
