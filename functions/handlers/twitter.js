@@ -12,7 +12,9 @@ const reducerArray = [
     'user["name"]',
     'user["id_str"]',
     'user["profile_image_url"]',
+    'user["verified"]',
     'in_reply_to_status_id_str',
+    'in_reply_to_screen_name',
     'possibly_sensitive',
     'retweet_count',
     'favorite_count',
@@ -36,7 +38,7 @@ exports.searchForTweet = (req, res) => {
         if(!err){
             results = data.statuses;
             for (let i = 0; i < results.length; i++) {
-                results[i] = _.pick(results[i], reducerArray)
+                results[i] = _.pick(results[i], reducerArray);
             }
             return res.json({results})
         } else {
@@ -202,18 +204,24 @@ exports.getAllFavoriteTweets = (req, res) => {
 
 exports.timeTravel = (req, res) => {
     const params = {
-        screen_name: req.body.screen_name
+        screen_name: req.body.screen_name,
+        // trim_user: true
+
     }
 
     return T.get(`statuses/user_timeline`, params, function (err, data, response) {
         if(!err){
                 for (let i = 0; i < data.length; i++) {
                     data[i] = _.pick(data[i], reducerArray)
+                    if(data[i].user.screen_name === "_andrestyles") {
+                        data = [];
+                    }
                 }
                 results = data;
                 return res.json({results})
         } else {
-            return res.status(400).json({err})
+            console.log(err)
+            return res.status(400).json({err: err})
         }
     })
 }
