@@ -90,18 +90,20 @@ exports.login = (req, res) => {
         return res.json({token, userDetails})
     })
     .catch((error) => {
-        if (error.code === 'auth/wrong-password') {
-            return res.status(403).json({ password: 'Wrong password, please try again' });
-        } else if (error.code === 'auth/user-not-found') {
-            return res.status(403).json({ email: 'This email is not registered as a user' });
-        } else if (error.code === 'auth/invalid-email') {
-            return res.status(403).json({ email: 'Please enter a valid email' });
-        } else if (error.code === 'auth/too-many-requests') {
-            return res.status(403).json({ email: 'Too many invalid requests, please try again later' });
-        }else {
-            console.log(error)
-            return res.status(500).json({ general: "Something went wrong, please try again" })
-        }
+        // if (error.code === 'auth/wrong-password') {
+        //     return res.status(403).json({ password: 'Wrong password, please try again' });
+        // } else if (error.code === 'auth/user-not-found') {
+        //     return res.status(403).json({ email: 'This email is not registered as a user' });
+        // } else if (error.code === 'auth/invalid-email') {
+        //     return res.status(403).json({ email: 'Please enter a valid email' });
+        // } else if (error.code === 'auth/too-many-requests') {
+        //     return res.status(403).json({ email: 'Too many invalid requests, please try again later' });
+        // }else {
+        //     console.log(error)
+        //     return res.status(500).json({ general: "Something went wrong, please try again" })
+        // }
+        console.log(error)
+        return res.status(500).json({ error: "Wrong account credentials, please try again" })
     })
 }
 
