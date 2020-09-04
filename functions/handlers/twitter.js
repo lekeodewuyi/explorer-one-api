@@ -29,7 +29,8 @@ exports.searchForTweet = (req, res) => {
     const params = {
         tweet_mode: "extended",
         q: req.body.query,
-        count: req.body.count,
+        // count: req.body.count,
+        count: 100,
         result_type: req.body.result_type,
         lang: req.body.language
     }
