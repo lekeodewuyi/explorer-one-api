@@ -50,7 +50,8 @@ exports.searchForTweet = (req, res) => {
 
 exports.getTweetById = (req, res) => {
         const params = {
-            id: req.params.tweetId
+            id: req.params.tweetId,
+            tweet_mode: "extended"
         }
 
         T.get('statuses/show/', params, function(err, data, response) {
@@ -243,6 +244,7 @@ exports.createCollection = async (req, res) => {
 
     let collectionCount;
     let collectionDetails = {};
+    let userDetails;
     db.doc(`users/${email}`).get()
         .then((doc) => {
             collectionCount = doc.data().collectionCount;
@@ -263,6 +265,10 @@ exports.createCollection = async (req, res) => {
                 await db.collection("users").doc(`${email}`).update({
                     collections: admin.firestore.FieldValue.arrayUnion(collectionName)
                 });
+                await db.doc(`users/${email}`).get()
+                    .then((doc) => {
+                        userDetails = doc.data();
+                    })
                 return db.doc(`${email}-(Collections)/${newCollection.collectionName}`).set(newCollection);
             } else {
                 return res.status(400).json({error: "You already have a collection with this name"})
@@ -270,7 +276,7 @@ exports.createCollection = async (req, res) => {
         })
         .then(() => {
             collectionDetails = newCollection;
-            return res.json({collectionDetails})
+            return res.json({collectionDetails, userDetails})
         })
         .catch((error) => {
             console.error(error);
@@ -299,7 +305,8 @@ exports.getTweetsFromCollection = (req, res) => {
             let collectionFavoritesIds = collectionFavorites.toString();
 
             const params = {
-                id: collectionFavoritesIds
+                id: collectionFavoritesIds,
+                tweet_mode: "extended"
             }
 
             return T.get(`statuses/lookup`, params, function (err, data, response) {
