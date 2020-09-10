@@ -8,7 +8,7 @@ app.use(cors());
 
 const { searchForTweet, getTweetById, saveFavoriteTweet, deleteFavoriteTweet, getAllFavoriteTweets, timeTravel, createCollection, getTweetsFromCollection, getPlaceId } = require('./handlers/twitter');
 
-const { signup, login } = require('./handlers/users');
+const { signup, login, resetPassword } = require('./handlers/users');
 const { auth } = require('./utilities/auth');
 const { getUserDetail } = require('./handlers/test');
 
@@ -25,6 +25,7 @@ app.post('/geo', getPlaceId)
 app.post('/signup', signup);
 app.post('/login', login);
 app.post('/user', getUserDetail)
+app.post('/update/password', auth, resetPassword)
 
 
 exports.api = functions.https.onRequest(app);

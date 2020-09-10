@@ -1,6 +1,7 @@
 const { db, firebase } = require('../utilities/admin');
 
 const { validateSignupData, validateLoginData } = require('../utilities/validators');
+const admin = require('../utilities/admin');
 
 
 exports.signup = (req, res) => {
@@ -79,7 +80,8 @@ exports.login = (req, res) => {
     let userDetails = {};
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
-        return data.user.getIdToken();
+        console.log(data.user.refreshToken)
+        return data.user.getIdToken(true);
     })
     .then((idToken) => {
         token = idToken;
@@ -114,5 +116,20 @@ exports.getUserDetail = (req, res) => {
             let hello = doc.data();
             let fieldLength = Object.keys(hello).length
             return res.json({fieldLength, hello})
+        })
+}
+
+
+exports.resetPassword = (req, res) => {
+
+    firebase.auth().useDeviceLanguage();
+    firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+            return res.json({success: "Email successfully sent"});
+
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.json({error: error})
         })
 }

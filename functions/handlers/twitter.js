@@ -22,7 +22,8 @@ const reducerArray = [
     'retweeted_status["text"]',
     'retweeted_status["full_text"]',
     'is_quote_status',
-    'extended_entities["media"]'
+    'extended_entities["media"]',
+    'entities["media"]'
 ]
 
 exports.searchForTweet = (req, res) => {
@@ -205,8 +206,11 @@ exports.getAllFavoriteTweets = (req, res) => {
 
 
 exports.timeTravel = (req, res) => {
+
     const params = {
+        tweet_mode: "extended",
         screen_name: req.body.screen_name,
+        count: 200
         // trim_user: true
 
     }
@@ -223,7 +227,7 @@ exports.timeTravel = (req, res) => {
                 return res.json({results})
         } else {
             console.log(err)
-            return res.status(400).json({err: err})
+            return res.status(400).json({err})
         }
     })
 }
@@ -248,11 +252,11 @@ exports.createCollection = async (req, res) => {
     db.doc(`users/${email}`).get()
         .then((doc) => {
             collectionCount = doc.data().collectionCount;
-            if (collectionCount < 20) {
+            if (collectionCount < 10) {
                 
                 return db.collection(`${email}-(Collections)`).where("collectionName", "==", collectionName).get();
             } else {
-                return res.status(400).json({error: "You have exceeded your collection limit"})
+                return res.status(400).json({error: "You have reached your collection limit"})
             }
         })
         .then( async (data) => {
@@ -289,15 +293,19 @@ exports.createCollection = async (req, res) => {
 exports.getTweetsFromCollection = (req, res) => {
 
     const collectionName = req.body.collectionName;
+    console.log("hello" + collectionName + "hey")
 
     let results = [];
     let collectionDetails;
     let collectionFavorites = []
     db.doc(`${email}-(Collections)/${collectionName}`).get()
         .then( async (doc) => {
+            console.log(doc.data())
             if(!doc.exists) {
+                console.log("ohhhhh")
                 return res.status(400).json({error: "Sorry, this collection does not exist"})
             }
+            console.log("yassssy")
             collectionDetails = doc.data();
             collectionFavorites = doc.data()[`${req.body.collectionName}`];
             console.log(collectionFavorites)
