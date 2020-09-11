@@ -121,6 +121,7 @@ exports.getUserDetail = (req, res) => {
 
 
 exports.resetPassword = (req, res) => {
+    const email = req.body.email;
 
     firebase.auth().useDeviceLanguage();
     firebase.auth().sendPasswordResetEmail(email)
@@ -130,6 +131,10 @@ exports.resetPassword = (req, res) => {
         })
         .catch((error) => {
             console.error(error);
-            return res.json({error: error})
+            if (error.code === "auth/user-not-found") {
+                return res.status(400).json({error: "The email account you entered is not linked to a twtr &middot; spotlight account. You can try another email address or signup for a new account"});
+            } else {
+                return res.status(500).json({error: "Something went wrong"})
+            }
         })
 }

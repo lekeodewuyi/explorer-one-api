@@ -25,7 +25,7 @@ app.post('/geo', getPlaceId)
 app.post('/signup', signup);
 app.post('/login', login);
 app.post('/user', getUserDetail)
-app.post('/update/password', auth, resetPassword)
+app.post('/update/password', resetPassword)
 
 
 exports.api = functions.https.onRequest(app);
