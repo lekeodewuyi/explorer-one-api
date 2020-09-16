@@ -11,7 +11,7 @@ const reducerArray = [
     'user["screen_name"]',
     'user["name"]',
     'user["id_str"]',
-    'user["profile_image_url"]',
+    'user["profile_image_url_https"]',
     'user["verified"]',
     'in_reply_to_status_id_str',
     'in_reply_to_screen_name',

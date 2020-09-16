@@ -37,7 +37,7 @@ exports.signup = (req, res) => {
                 userDetails = {
                 name: newUser.name,
                 email: newUser.email,
-                userId: userId,
+                // userId: userId,
                 favorites: [],
                 collections: [],
                 collectionCount: 0,
@@ -88,7 +88,16 @@ exports.login = (req, res) => {
         return db.doc(`users/${user.email}`).get();
     })
     .then((doc) => {
-        userDetails = doc.data();
+        let userData = doc.data();
+        userDetails = {
+            name: userData.name,
+            email: userData.email,
+            // userId: userId,
+            favorites: userData.favorites,
+            collections: userData.collections,
+            collectionCount: userData.collectionCount,
+            createdAt: userData.createdAt
+        }
         return res.json({token, userDetails})
     })
     .catch((error) => {
