@@ -23,7 +23,7 @@ exports.signup = (req, res) => {
     }
 
     let token, userId;
-    let userDetails = {};
+    let userCredentials = {};
     db.doc(`users/${newUser.email}`).get()
         .then((doc) => {
             return firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password);
@@ -34,18 +34,26 @@ exports.signup = (req, res) => {
         })
         .then((idToken) => {
             token = idToken;
-                userDetails = {
+                userCredentials = {
                 name: newUser.name,
                 email: newUser.email,
-                // userId: userId,
+                userId: userId,
                 favorites: [],
                 collections: [],
                 collectionCount: 0,
                 createdAt: new Date().toISOString()
             }
-            return db.doc(`users/${newUser.email}`).set(userDetails);
+            return db.doc(`users/${newUser.email}`).set(userCredentials);
         })
         .then(() => {
+            let userDetails = {
+                name: newUser.name,
+                email: newUser.email,
+                favorites: [],
+                collections: [],
+                collectionCount: 0,
+                createdAt: new Date().toISOString()
+            }
             return res.json({token, userDetails});
         })
         .catch((error) => {
