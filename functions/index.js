@@ -4,13 +4,13 @@ const express = require('express');
 const app = express();
 
 const cors = require('cors')
-app.use(cors());
+// app.use(cors());
 
-// const corsOption = {
-//     origin: 'https://twtr.lekeodewuyi.com',
-//     optionsSuccessStatus: 200
-// }
-// const referrer_domain = "https://twtr.lekeodewuyi.com"
+const corsOption = {
+    origin: 'https://twtr.lekeodewuyi.com',
+    optionsSuccessStatus: 200
+}
+const referrer_domain = "https://twtr.lekeodewuyi.com"
 
 
 const { searchForTweet, getTweetById, saveFavoriteTweet, deleteFavoriteTweet, getAllFavoriteTweets, timeTravel, createCollection, getTweetsFromCollection, getPlaceId } = require('./handlers/twitter');
@@ -20,14 +20,14 @@ const { auth } = require('./utilities/auth');
 const { getUserDetail } = require('./handlers/test');
 
 
-// app.all('/*', function(req, res, next) {
-//     if(req.headers.referer.indexOf(referrer_domain) == -1){
-//         console.log("no")
-//       res.send('Invalid Request')
-//     }
-//     next();
-//   });
-// app.use(cors(corsOption));
+app.all('/*', function(req, res, next) {
+    if(req.headers.referer.indexOf(referrer_domain) == -1){
+        console.log("no")
+      res.send('Invalid Request')
+    }
+    next();
+  });
+app.use(cors(corsOption));
 
 
 app.post('/', function(req, res){
