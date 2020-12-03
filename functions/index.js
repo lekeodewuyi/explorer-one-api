@@ -4,14 +4,6 @@ const express = require('express');
 const app = express();
 
 const cors = require('cors')
-// app.use(cors());
-
-const corsOption = {
-    origin: 'https://twtr.lekeodewuyi.com',
-    optionsSuccessStatus: 200
-}
-const referrer_domain = "https://twtr.lekeodewuyi.com"
-
 
 const { searchForTweet, getTweetById, saveFavoriteTweet, deleteFavoriteTweet, getAllFavoriteTweets, timeTravel, createCollection, getTweetsFromCollection, getPlaceId } = require('./handlers/twitter');
 
@@ -19,15 +11,23 @@ const { signup, login, resetPassword } = require('./handlers/users');
 const { auth } = require('./utilities/auth');
 const { getUserDetail } = require('./handlers/test');
 
-
+const whitelist = ['https://fast-fingers-dev.netlify.app', 'https://twtr-dev-env.netlify.app/']
+const corsOption = {
+    origin: whitelist,
+    optionsSuccessStatus: 200
+}
 app.all('/*', function(req, res, next) {
-    if(req.headers.referer.indexOf(referrer_domain) == -1){
-        console.log("no")
-      res.send('Invalid Request')
+    for (let i = 0; i < whitelist.length; i++) {
+      if (req.headers.referer.indexOf(whitelist[i]) > -1) {
+        console.log(whitelist[i]);
+        return next()
+      }
     }
-    next();
+    console.log("no")
+    return res.status(400).json({error: 'Invalid Request'})
   });
 app.use(cors(corsOption));
+
 
 
 app.post('/', function(req, res){
