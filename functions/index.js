@@ -11,7 +11,7 @@ const { signup, login, resetPassword } = require('./handlers/users');
 const { auth } = require('./utilities/auth');
 const { getUserDetail } = require('./handlers/test');
 
-const whitelist = ['https://fast-fingers-dev.netlify.app', 'https://twtr-dev-env.netlify.app/']
+const whitelist = ['https://twtr.lekeodewuyi.com', 'https://twtr-dev-env.netlify.app']
 const corsOption = {
     origin: whitelist,
     optionsSuccessStatus: 200
